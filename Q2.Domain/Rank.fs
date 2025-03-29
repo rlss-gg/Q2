@@ -17,15 +17,16 @@ type EloRankCriteria =
     | UpperBound of elo: int
 
 type RankCriteria = {
-    Game: Map<GameMode, GameRankCriteria> option
+    GameRank: Map<GameMode, GameRankCriteria> option
     Elo: EloRankCriteria option
+    Servers: GameServer list option
 }
 
 type Rank = {
     Id: string
     Name: string
     Origin: RankOrigin
-    Criteria: RankCriteria list
+    Criteria: RankCriteria
 }
 
 module Rank =
@@ -42,3 +43,5 @@ module Rank =
         
     let setCriteria criteria rank =
         { rank with Criteria = criteria }
+
+    // TODO: Functions to set/add/remove individual criteria

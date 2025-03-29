@@ -6,7 +6,7 @@ open System.Threading.Tasks
 type UpdateRankUseCaseRequest = {
     Id: string
     Name: string option
-    Criteria: RankCriteria list option
+    Criteria: RankCriteria option
 }
 
 [<RequireQualifiedAccess>]
