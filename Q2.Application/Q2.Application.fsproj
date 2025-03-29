@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Common\TaskExtensions.fs" />
+    <Compile Include="Abstractions\IDurable.fs" />
     <Compile Include="Abstractions\IPersistence.fs" />
     <Compile Include="Abstractions\ITime.fs" />
     <Compile Include="UseCases\Players\CreatePlayerUseCase.fs" />
