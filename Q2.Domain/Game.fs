@@ -3,13 +3,47 @@
 /// Rocket League Sideswipe competitive ranks
 [<RequireQualifiedAccess>]
 type GameRank =
-    | Bronze
-    | Silver
-    | Gold
-    | Platinum
-    | Diamond
-    | Champion
-    | GrandChampion
+    | BronzeI
+    | BronzeII
+    | BronzeIII
+    | BronzeIV
+    | BronzeV
+    | SilverI
+    | SilverII
+    | SilverIII
+    | SilverIV
+    | SilverV
+    | GoldI
+    | GoldII
+    | GoldIII
+    | GoldIV
+    | GoldV
+    | PlatinumI
+    | PlatinumII
+    | PlatinumIII
+    | PlatinumIV
+    | PlatinumV
+    | DiamondI
+    | DiamondII
+    | DiamondIII
+    | DiamondIV
+    | DiamondV
+    | ChampionI
+    | ChampionII
+    | ChampionIII
+    | ChampionIV
+    | ChampionV
+    | GrandChampion of elo: int
+
+/// Rocket League Sideswipe game modes
+[<RequireQualifiedAccess>]
+type GameMode =
+    | Duel
+    | Doubles
+    | Threes
+    | Hoops
+    | Volleyball
+    | Squash
 
 /// Rocket League server locations according to RL Wiki https://rocketleague.fandom.com/wiki/Servers
 [<RequireQualifiedAccess>]

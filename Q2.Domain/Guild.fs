@@ -1,6 +1,7 @@
 ﻿namespace Q2.Domain
 
 type GuildRoles = {
+    Ranks: Map<string, string>
     HelperRoleId: string option
     ModeratorRoleId: string option
     AdministratorRoleId: string option
@@ -15,5 +16,4 @@ type Guild = {
     Id: string
     Roles: GuildRoles
     Channels: GuildChannels
-    Progressions: RankProgression list
 }

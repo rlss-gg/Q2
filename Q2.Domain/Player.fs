@@ -11,8 +11,9 @@ type Player = {
     Username: string
     PreviousUsernames: string list
     Servers: GameServer list
-    Rank: GameRank option
-    RankUpdatedAt: DateTime option
+    Ranks: Map<GameMode, GameRank>
+    Elo: int option
+    LastRankUpdateAt: DateTime option
     Settings: PlayerSettings
 }
 
@@ -23,8 +24,9 @@ module Player =
             Username = username
             PreviousUsernames = []
             Servers = []
-            Rank = None
-            RankUpdatedAt = None
+            Ranks = Map.empty
+            Elo = None
+            LastRankUpdateAt = None
             Settings = {
                 QueueNotificationsEnabled = true
             }
@@ -38,16 +40,28 @@ module Player =
                 Username = username
                 PreviousUsernames = player.PreviousUsernames @ [player.Username] }
 
+    let setServers servers player =
+        { player with Servers = servers }
+
     let addServer server player =
-        { player with Servers = player.Servers @ [server] |> List.distinct }
+        setServers (player.Servers @ [server] |> List.distinct) player
 
     let removeServer server player =
-        { player with Servers = player.Servers |> List.filter ((<>) server) }
+        setServers (player.Servers |> List.filter ((<>) server)) player
 
-    let setGameRank rank currentTime player =
+    let setRanks ranks currentTime player =
         { player with
-            Rank = rank
-            RankUpdatedAt = Some currentTime }
+            Ranks = ranks
+            LastRankUpdateAt = Some currentTime }
+
+    let addRank mode rank currentTime player =
+        setRanks (player.Ranks |> Map.add mode rank) currentTime player
+
+    let removeRank mode currentTime player =
+        setRanks (player.Ranks |> Map.remove mode) currentTime player
+
+    let setElo elo player =
+        { player with Elo = Some elo }
 
     let setQueueNotifications enabled player =
         let settings = { player.Settings with QueueNotificationsEnabled = enabled }

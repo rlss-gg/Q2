@@ -1,37 +1,44 @@
 ﻿namespace Q2.Domain
 
+[<RequireQualifiedAccess>]
+type RankOrigin =
+    | Global
+    | Guild of guildId: string
+
+type GameRankCriteria = {
+    Min: GameRank
+    Max: GameRank
+}
+
+[<RequireQualifiedAccess>]
+type EloRankCriteria =
+    | Range of min: int * max: int
+    | LowerBound of elo: int
+    | UpperBound of elo: int
+
+type RankCriteria = {
+    Game: Map<GameMode, GameRankCriteria> option
+    Elo: EloRankCriteria option
+}
+
 type Rank = {
     Id: string
     Name: string
-    Public: bool
+    Origin: RankOrigin
+    Criteria: RankCriteria list
 }
 
 module Rank =
-    let create id name public' =
+    let create id name origin criteria =
         {
             Id = id
             Name = name
-            Public = public'
+            Origin = origin
+            Criteria = criteria
         }
-
-type RankProgression = {
-    RankId: string
-    PlacementElo: int
-    MinimumElo: int option
-    MaximumElo: int option
-}
-
-module RankProgression =
-    let create id placementElo =
-        {
-            RankId = id
-            PlacementElo = placementElo
-            MinimumElo = None
-            MaximumElo = None
-        }
-
-    let setMinimumElo elo progression =
-        { progression with MinimumElo = elo }
-
-    let setMaximumElo elo progression =
-        { progression with MaximumElo = elo }
+        
+    let setName name rank =
+        { rank with Name = name }
+        
+    let setCriteria criteria rank =
+        { rank with Criteria = criteria }

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Common\TaskExtensions.fs" />
+    <Compile Include="Abstractions\IPersistence.fs" />
+    <Compile Include="Abstractions\ITime.fs" />
+    <Compile Include="UseCases\Players\CreatePlayerUseCase.fs" />
+    <Compile Include="UseCases\Players\UpdatePlayerUseCase.fs" />
+    <Compile Include="UseCases\Ranks\CreateRankUseCase.fs" />
+    <Compile Include="UseCases\Ranks\UpdateRankUseCase.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Q2.Domain\Q2.Domain.fsproj" />
+  </ItemGroup>
+
+</Project>
