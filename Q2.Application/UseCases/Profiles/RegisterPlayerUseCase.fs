@@ -1,4 +1,12 @@
-﻿module Q2.Application.CreateRankUseCase
+﻿module Q2.Application.RegisterPlayerUseCase
+
+// - /register [ign] [region] [rank]
+
+(*
+
+// ----- REFERENCE USE CASE FROM OLD -----
+
+module Q2.Application.CreateRankUseCase
 
 open Q2.Domain
 open System.Threading.Tasks
@@ -26,3 +34,5 @@ let run (env: #IPersistence) (req: CreateRankUseCaseRequest) = task {
         let res = invoke req.Id req.Name req.Origin req.Criteria
         return! env.Ranks.Set res |> Task.map Ok
 }
+
+*)
