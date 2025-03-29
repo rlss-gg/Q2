@@ -23,6 +23,11 @@
     <Compile Include="UseCases\Matchmaking\JoinQueueUseCase.fs" />
     <Compile Include="UseCases\Matchmaking\LeaveQueueUseCase.fs" />
     <Compile Include="UseCases\Matchmaking\ReportMatchUseCase.fs" />
+    <Compile Include="Services\InteractionService.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Discord" Version="0.0.21" />
   </ItemGroup>
 
   <ItemGroup>
