@@ -1,6 +1,7 @@
 ﻿open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
-open Microsoft.DurableTask.Client
+open Q2.AppHost
+open Q2.Application
 
 let (!) f = f |> ignore
 
@@ -9,7 +10,7 @@ HostBuilder()
     .ConfigureServices(fun ctx services ->
         !services.AddHttpClient()
         !services.AddLogging()
-        !services.AddDurableTaskClient(fun builder -> !builder.UseGrpc())
+        !services.AddSingleton<IPersistence, Persistence>()
     )
     .Build()
     .Run()

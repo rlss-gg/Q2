@@ -15,7 +15,17 @@ type IGuildPersistence =
     abstract Get: guildId: string -> Task<Guild option>
     abstract Set: guild: Guild -> Task<Guild>
 
+type IQueuePersistence =
+    abstract Get: queueId: string -> Task<Queue option>
+    abstract Set: queue: Queue -> Task<Queue>
+
+type IMatchPersistence =
+    abstract Get: matchId: string -> Task<Match option>
+    abstract Set: match': Match -> Task<Match>
+
 type IPersistence =
     abstract Players: IPlayerPersistence
     abstract Ranks: IRankPersistence
     abstract Guilds: IGuildPersistence
+    abstract Queues: IQueuePersistence
+    abstract Matches: IMatchPersistence

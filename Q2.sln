@@ -11,6 +11,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Q2.AppHost", "Q2.AppHost\Q2
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Q2.Presentation", "Q2.Presentation\Q2.Presentation.fsproj", "{ED2EB091-E8D0-47CF-AED3-3BEA0362D86D}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Q2.Infrastructure.Persistence", "Q2.Infrastructure.Persistence\Q2.Infrastructure.Persistence.fsproj", "{3258E2AB-347B-4E94-95E9-89B98CD4CA94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{ED2EB091-E8D0-47CF-AED3-3BEA0362D86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED2EB091-E8D0-47CF-AED3-3BEA0362D86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED2EB091-E8D0-47CF-AED3-3BEA0362D86D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3258E2AB-347B-4E94-95E9-89B98CD4CA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3258E2AB-347B-4E94-95E9-89B98CD4CA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3258E2AB-347B-4E94-95E9-89B98CD4CA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3258E2AB-347B-4E94-95E9-89B98CD4CA94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

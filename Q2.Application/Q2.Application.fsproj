@@ -6,23 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Common\Int32Extensions.fs" />
     <Compile Include="Common\TaskExtensions.fs" />
-    <Compile Include="Abstractions\IDurable.fs" />
     <Compile Include="Abstractions\IPersistence.fs" />
     <Compile Include="Abstractions\ITime.fs" />
-    <Compile Include="Abstractions\IEnv.fs" />
-    <Compile Include="Durables\QueueEntity.fs" />
     <Compile Include="UseCases\Players\CreatePlayerUseCase.fs" />
     <Compile Include="UseCases\Players\UpdatePlayerUseCase.fs" />
     <Compile Include="UseCases\Ranks\CreateRankUseCase.fs" />
     <Compile Include="UseCases\Ranks\UpdateRankUseCase.fs" />
     <Compile Include="UseCases\Guilds\CreateGuildUseCase.fs" />
     <Compile Include="UseCases\Guilds\UpdateGuildUseCase.fs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.DurableTask" Version="1.2.3" />
   </ItemGroup>
 
   <ItemGroup>
