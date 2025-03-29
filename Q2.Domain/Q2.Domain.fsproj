@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Game.fs" />
+    <Compile Include="Region.fs" />
+    <Compile Include="Player.fs" />
+    <Compile Include="Rank.fs" />
+    <Compile Include="Guild.fs" />
+    <Compile Include="Queue.fs" />
+    <Compile Include="Match.fs" />
+  </ItemGroup>
+
+</Project>
