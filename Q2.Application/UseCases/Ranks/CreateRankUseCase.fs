@@ -7,7 +7,7 @@ type CreateRankUseCaseRequest = {
     Id: string
     Name: string
     Origin: RankOrigin
-    Criteria: RankCriteria list
+    Criteria: RankCriteria
 }
 
 [<RequireQualifiedAccess>]
@@ -18,11 +18,11 @@ let invoke id name origin criteria =
     Rank.create id name origin criteria
 
 let run (env: #IPersistence) (req: CreateRankUseCaseRequest) = task {
-    match! env.GetRank req.Id with
+    match! env.Ranks.Get req.Id with
     | Some _ ->
         return Error CreateRankUseCaseError.RankAlreadyExists
 
     | None ->
         let res = invoke req.Id req.Name req.Origin req.Criteria
-        return! env.SetRank res |> Task.map Ok
+        return! env.Ranks.Set res |> Task.map Ok
 }

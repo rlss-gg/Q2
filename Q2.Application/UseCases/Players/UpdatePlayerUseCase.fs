@@ -25,11 +25,11 @@ let invoke username servers ranks currentTime queueNotifications player =
 let run (env: #IPersistence & #ITime) (req: UpdatePlayerUseCaseRequest) = task {
     let currentTime = env.GetCurrentTime()
 
-    match! env.GetPlayer req.Id with
+    match! env.Players.Get req.Id with
     | None ->
         return Error UpdatePlayerUseCaseError.PlayerDoesNotExist
 
     | Some player ->
         let res = invoke req.Username req.Servers req.Ranks currentTime req.QueueNotifications player
-        return! env.SetPlayer res |> Task.map Ok
+        return! env.Players.Set res |> Task.map Ok
 }

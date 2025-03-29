@@ -13,6 +13,8 @@
     <Compile Include="UseCases\Players\UpdatePlayerUseCase.fs" />
     <Compile Include="UseCases\Ranks\CreateRankUseCase.fs" />
     <Compile Include="UseCases\Ranks\UpdateRankUseCase.fs" />
+    <Compile Include="UseCases\Guilds\CreateGuildUseCase.fs" />
+    <Compile Include="UseCases\Guilds\UpdateGuildUseCase.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,9 +3,19 @@
 open Q2.Domain
 open System.Threading.Tasks
 
-type IPersistence =
-    abstract GetPlayer: playerId: string -> Task<Player option>
-    abstract SetPlayer: player: Player -> Task<Player>
+type IPlayerPersistence =
+    abstract Get: playerId: string -> Task<Player option>
+    abstract Set: player: Player -> Task<Player>
 
-    abstract GetRank: rankId: string -> Task<Rank option>
-    abstract SetRank: rank: Rank -> Task<Rank>
+type IRankPersistence =
+    abstract Get: rankId: string -> Task<Rank option>
+    abstract Set: rank: Rank -> Task<Rank>
+
+type IGuildPersistence =
+    abstract Get: guildId: string -> Task<Guild option>
+    abstract Set: guild: Guild -> Task<Guild>
+
+type IPersistence =
+    abstract Players: IPlayerPersistence
+    abstract Ranks: IRankPersistence
+    abstract Guilds: IGuildPersistence

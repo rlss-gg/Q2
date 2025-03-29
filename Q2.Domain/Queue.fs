@@ -41,3 +41,6 @@ module Queue =
 
     let isReady queue =
         List.length queue.Ready = Map.count queue.Entrants
+    
+    let clear queue =
+        create queue.Id queue.Size

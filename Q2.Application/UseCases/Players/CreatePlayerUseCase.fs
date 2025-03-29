@@ -16,11 +16,11 @@ let invoke id username =
     Player.create id username
 
 let run (env: #IPersistence) (req: CreatePlayerUseCaseRequest) = task {
-    match! env.GetPlayer req.Id with
+    match! env.Players.Get req.Id with
     | Some _ ->
         return Error CreatePlayerUseCaseError.PlayerAlreadyExists
 
     | None ->
         let res = invoke req.Id req.Username
-        return! env.SetPlayer res |> Task.map Ok
+        return! env.Players.Set res |> Task.map Ok
 }

@@ -19,11 +19,11 @@ let invoke name criteria rank =
     |> Option.foldBack (fun criteria rank -> Rank.setCriteria criteria rank) criteria
 
 let run (env: #IPersistence) (req: UpdateRankUseCaseRequest) = task {
-    match! env.GetRank req.Id with
+    match! env.Ranks.Get req.Id with
     | None ->
         return Error UpdateRankUseCaseError.RankDoesNotExist
 
     | Some rank ->
         let res = invoke req.Name req.Criteria rank
-        return! env.SetRank res |> Task.map Ok
+        return! env.Ranks.Set res |> Task.map Ok
 }
