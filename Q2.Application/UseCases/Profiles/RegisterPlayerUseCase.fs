@@ -1,38 +1,32 @@
-﻿module Q2.Application.RegisterPlayerUseCase
-
-// - /register [ign] [region] [rank]
-
-(*
-
-// ----- REFERENCE USE CASE FROM OLD -----
-
-module Q2.Application.CreateRankUseCase
+﻿namespace Q2.Application
 
 open Q2.Domain
 open System.Threading.Tasks
 
-type CreateRankUseCaseRequest = {
+type RegisterPlayerUseCase = {
     Id: string
-    Name: string
-    Origin: RankOrigin
-    Criteria: RankCriteria
+    Username: string
+    PrimaryServer: GameServer
+    RankMode: GameMode
+    Rank: GameRank
 }
 
 [<RequireQualifiedAccess>]
-type CreateRankUseCaseError =
-    | RankAlreadyExists
+type RegisterPlayerUseCaseError =
+    | PlayerAlreadyRegistered
 
-let invoke id name origin criteria =
-    Rank.create id name origin criteria
+module RegisterPlayerUseCase =
+    let invoke id username primaryServer mode rank currentTime =
+        Player.create id username
+        |> Player.addServer primaryServer
+        |> Player.addRank  mode rank currentTime
 
-let run (env: #IPersistence) (req: CreateRankUseCaseRequest) = task {
-    match! env.Ranks.Get req.Id with
-    | Some _ ->
-        return Error CreateRankUseCaseError.RankAlreadyExists
+    let run (env: #IPersistence & #ITime) (req: RegisterPlayerUseCase) = task {
+        match! env.Players.Get req.Id with
+        | Some _ ->
+            return Error RegisterPlayerUseCaseError.PlayerAlreadyRegistered
 
-    | None ->
-        let res = invoke req.Id req.Name req.Origin req.Criteria
-        return! env.Ranks.Set res |> Task.map Ok
-}
-
-*)
+        | None ->
+            let res = invoke req.Id req.Username req.PrimaryServer req.RankMode req.Rank (env.GetCurrentTime())
+            return! env.Players.Set res |> Task.map Ok
+    }
