@@ -12,6 +12,16 @@ type Region =
     | SAM
 
 module Region =
+    let toGameServers (v: Region) =
+        match v with
+        | Region.NA -> [GameServer.USE; GameServer.USW; GameServer.USC]
+        | Region.EU -> [GameServer.EU]
+        | Region.ASIA -> [GameServer.ASC; GameServer.ASM; GameServer.IND]
+        | Region.MENA -> [GameServer.ME]
+        | Region.OCE -> [GameServer.OCE]
+        | Region.SAF -> [GameServer.SAF]
+        | Region.SAM -> [GameServer.SAM]
+
     let fromGameServer (v: GameServer) =
         match v with
         | GameServer.USE | GameServer.USW | GameServer.USC -> Region.NA
@@ -51,3 +61,6 @@ module Region =
         | Stringified.SAF -> Some Region.SAF
         | Stringified.SAM -> Some Region.SAM
         | _ -> None
+
+    let (|Region|_|) (v: string) =
+        fromString v

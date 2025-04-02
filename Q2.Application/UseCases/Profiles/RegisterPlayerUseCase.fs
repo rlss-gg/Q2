@@ -6,8 +6,7 @@ open System.Threading.Tasks
 type RegisterPlayerUseCase = {
     Id: string
     Username: string
-    PrimaryServer: GameServer
-    RankMode: GameMode
+    Region: Region
     Rank: GameRank
 }
 
@@ -16,10 +15,10 @@ type RegisterPlayerUseCaseError =
     | PlayerAlreadyRegistered
 
 module RegisterPlayerUseCase =
-    let invoke id username primaryServer mode rank currentTime =
+    let invoke id username region rank currentTime =
         Player.create id username
-        |> Player.addServer primaryServer
-        |> Player.addRank  mode rank currentTime
+        |> Player.setRegion region
+        |> Player.setPrimaryRank rank currentTime
 
     let run (env: #IPersistence & #ITime) (req: RegisterPlayerUseCase) = task {
         match! env.Players.Get req.Id with
@@ -27,6 +26,6 @@ module RegisterPlayerUseCase =
             return Error RegisterPlayerUseCaseError.PlayerAlreadyRegistered
 
         | None ->
-            let res = invoke req.Id req.Username req.PrimaryServer req.RankMode req.Rank (env.GetCurrentTime())
+            let res = invoke req.Id req.Username req.Region req.Rank (env.GetCurrentTime())
             return! env.Players.Set res |> Task.map Ok
     }

@@ -156,6 +156,9 @@ module GameRank =
         | GrandChampionElo rank -> Some rank
         | _ -> None
 
+    let (|GameRank|_|) (str: string) =
+        fromString str
+
 /// Rocket League Sideswipe game modes
 [<RequireQualifiedAccess>]
 type GameMode =
@@ -193,6 +196,9 @@ module GameMode =
         | Stringified.Volleyball -> Some GameMode.Volleyball
         | Stringified.Squash -> Some GameMode.Squash
         | _ -> None
+
+    let (|GameMode|_|) (str: string) =
+        fromString str
 
 /// Rocket League server locations according to RL Wiki https://rocketleague.fandom.com/wiki/Servers
 [<RequireQualifiedAccess>]
@@ -251,3 +257,6 @@ module GameServer =
         | Stringified.SAM -> Some GameServer.SAM
         | Stringified.IND -> Some GameServer.IND
         | _ -> None
+
+    let (|GameServer|_|) (str: string) =
+        fromString str
