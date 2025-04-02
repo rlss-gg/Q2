@@ -5,49 +5,54 @@ open FSharp.Discord.Types
 open Q2.Domain
 
 let handle env (interaction: Interaction) = task {
+    match interaction with
+    | ApplicationCommandAutocomplete "register" { Options = Some (
+        String.Autocomplete "server" server
+    ) } ->
+        return () // TODO: Implement
 
-    match interaction.Data with
-    | Some (InteractionData.APPLICATION_COMMAND data) ->
+    | ApplicationCommandAutocomplete "register" { Options = Some (
+        String.Autocomplete "rank" rank
+    ) } ->
+        return () // TODO: Implement
+
+    | ApplicationCommandAutocomplete "register" { Options = Some (
+        String.Autocomplete "mode" mode
+    ) } ->
+        return () // TODO: Implement
+
+    | ApplicationCommand "register" { Options = Some (
+        String.Required "username" username &
+        String.Required "server" server &
+        String.Required "rank" rank &
+        String.Required "mode" mode
+    ) } ->
         let userId =
-            match interaction.User, interaction.Member with
-            | Some user, _ -> user.Id
-            | _, Some ({ User = Some user }) -> user.Id
-            | _ -> failwith "No user or member found" // Should never happen, should confirm this though
+            match interaction.Author with
+            | InteractionAuthor.User u -> u.Id
+            | InteractionAuthor.GuildMember m -> m.User |> Option.map _.Id |> Option.get
 
-        match data with
-        | ({
-            Name = "register"
-            Options = Some (
-                Options.String "username" username &
-                Options.String "server" server &
-                Options.String "rank" rank &
-                Options.String "mode" mode
-            )
-        }) ->
-            let server = GameServer.fromString server
-            let rank = GameRank.fromString rank
-            let mode = GameMode.fromString mode
+        let server = GameServer.fromString server
+        let rank = GameRank.fromString rank
+        let mode = GameMode.fromString mode
 
-            // TODO: These can probably be changed to choices which can then match perfectly (how to handle rank then?)
-            // TODO: If going the choices route, can probably make special options active patterns for extracting to enum
-            // TODO: Do we really want mode and specific region? How could this be improved?
+        // TODO: These can probably be changed to choices which can then match perfectly (how to handle rank then?)
+        // TODO: If going the choices route, can probably make special options active patterns for extracting to enum
+        // TODO: Do we really want mode and specific region? How could this be improved?
 
-            match server, rank, mode with
-            | Some server, Some rank, Some mode ->
-                let! res = RegisterPlayerUseCase.run env {
-                    Id = userId
-                    Username = username
-                    PrimaryServer = server
-                    Rank = rank
-                    RankMode = mode
-                }
+        match server, rank, mode with
+        | Some server, Some rank, Some mode ->
+            let! res = RegisterPlayerUseCase.run env {
+                Id = userId
+                Username = username
+                PrimaryServer = server
+                Rank = rank
+                RankMode = mode
+            }
 
-                return ()
+            return ()
 
-                // TODO: This should probably be the individual command's responsibility which then returns unit
-
-            | _ ->
-                return ()
+            // TODO: This should probably be the individual command's responsibility which then returns unit
 
         | _ ->
             return ()

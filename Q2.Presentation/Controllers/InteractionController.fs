@@ -1,5 +1,6 @@
 ﻿namespace Q2.Presentation
 
+open FSharp.Discord.Commands
 open FSharp.Discord.Types
 open FSharp.Discord.Types.Serialization
 open FSharp.Discord.Webhook
@@ -10,7 +11,7 @@ open Q2.Application
 open System.Net
 open Thoth.Json.Net
 
-type InteractionController (configuration: IConfiguration) =
+type InteractionController (configuration: IConfiguration, env: IEnv) =
     let publicKey = configuration.GetValue<string> "DiscordPublicKey"
 
     [<Function "PostInteraction">]
@@ -44,7 +45,7 @@ type InteractionController (configuration: IConfiguration) =
 
         // Handle interaction
         match interaction with
-        | { Type = InteractionType.PING } ->
+        | Ping ->
             let callback = { Type = InteractionCallbackType.PONG; Data = None }
             let body = Encode.toString 0 (InteractionResponse.encoder callback)
             
@@ -53,6 +54,6 @@ type InteractionController (configuration: IConfiguration) =
             return res
 
         | interaction ->
-            do! InteractionService.handle interaction
+            do! InteractionService.handle env interaction
             return req.CreateResponse HttpStatusCode.Accepted
     }

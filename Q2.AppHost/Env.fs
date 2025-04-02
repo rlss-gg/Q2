@@ -2,6 +2,7 @@
 
 open Q2.Application
 open Q2.Infrastructure.Persistence
+open System
 
 type PlayerPersistence(comsos) =
     interface IPlayerPersistence with
@@ -28,10 +29,15 @@ type MatchPersistence(comsos) =
         member _.Get matchId = comsos |> Cosmos.Match.get matchId
         member _.Set match' = comsos |> Cosmos.Match.set match'
 
-type Persistence(cosmos) =
+type Env (cosmos) =
+    interface IEnv
+    
     interface IPersistence with
         member _.Players = PlayerPersistence cosmos
         member _.Ranks = RankPersistence cosmos
         member _.Guilds = GuildPersistence cosmos
         member _.Queues = QueuePersistence cosmos
         member _.Matches = MatchPersistence cosmos
+
+    interface ITime with
+        member _.GetCurrentTime () = DateTime.UtcNow
