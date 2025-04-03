@@ -12,8 +12,6 @@ open System.Net
 open Thoth.Json.Net
 
 type InteractionController (configuration: IConfiguration, env: IEnv) =
-    let publicKey = configuration.GetValue<string> "DiscordPublicKey"
-
     [<Function "PostInteraction">]
     member _.Post (
         [<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "interactions")>] req: HttpRequestData
@@ -34,7 +32,7 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
         | Some signature, Some timestamp ->
         
         // Validate signature
-        match Ed25519.verify timestamp json signature publicKey with
+        match Ed25519.verify timestamp json signature env.DiscordPublicKey with
         | false -> return req.CreateResponse HttpStatusCode.Unauthorized
         | _ ->
             

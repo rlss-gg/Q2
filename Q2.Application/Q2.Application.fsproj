@@ -7,7 +7,9 @@
 
   <ItemGroup>
     <Compile Include="Common\TaskExtensions.fs" />
+    <Compile Include="Abstractions\IHttp.fs" />
     <Compile Include="Abstractions\IPersistence.fs" />
+    <Compile Include="Abstractions\ISecrets.fs" />
     <Compile Include="Abstractions\ITime.fs" />
     <Compile Include="Abstractions\IEnv.fs" />
     <Compile Include="UseCases\Profiles\RegisterPlayerUseCase.fs" />
@@ -30,6 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.Discord" Version="0.0.23" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>

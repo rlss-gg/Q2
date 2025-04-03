@@ -1,8 +1,11 @@
 ﻿namespace Q2.AppHost
 
+open FSharp.Discord.Rest
+open Microsoft.Extensions.Configuration
 open Q2.Application
 open Q2.Infrastructure.Persistence
 open System
+open System.Net.Http
 
 type PlayerPersistence(comsos) =
     interface IPlayerPersistence with
@@ -29,8 +32,14 @@ type MatchPersistence(comsos) =
         member _.Get matchId = comsos |> Cosmos.Match.get matchId
         member _.Set match' = comsos |> Cosmos.Match.set match'
 
-type Env (cosmos) =
+type Env(httpClientFactory: IHttpClientFactory, configuration: IConfiguration, cosmos) =
     interface IEnv
+
+    interface IHttp with
+        member _.HttpClient () = httpClientFactory.CreateClient()
+        member _.BotClient botToken = httpClientFactory.CreateBotClient botToken
+        member _.OAuthClient accessToken = httpClientFactory.CreateOAuthClient accessToken
+        member _.BasicClient clientId clientSecret = httpClientFactory.CreateBasicClient clientId clientSecret
     
     interface IPersistence with
         member _.Players = PlayerPersistence cosmos
@@ -38,6 +47,11 @@ type Env (cosmos) =
         member _.Guilds = GuildPersistence cosmos
         member _.Queues = QueuePersistence cosmos
         member _.Matches = MatchPersistence cosmos
+
+    interface ISecrets with
+        member _.DiscordBotToken = configuration.GetValue<string> "DiscordBotToken"
+        member _.DiscordClientId = configuration.GetValue<string> "DiscordClientId"
+        member _.DiscordPublicKey = configuration.GetValue<string> "DiscordPublicKey"
 
     interface ITime with
         member _.GetCurrentTime () = DateTime.UtcNow
