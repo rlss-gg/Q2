@@ -25,7 +25,7 @@
     <Compile Include="UseCases\Matchmaking\LeaveQueueUseCase.fs" />
     <Compile Include="UseCases\Matchmaking\ReportMatchUseCase.fs" />
     <Compile Include="Interactions\Profiles\RegisterPlayerApplicationCommand.fs" />
-    <Compile Include="Services\InteractionService.fs" />
+    <Compile Include="Interactions\InteractionHandler.fs" />
   </ItemGroup>
 
   <ItemGroup>

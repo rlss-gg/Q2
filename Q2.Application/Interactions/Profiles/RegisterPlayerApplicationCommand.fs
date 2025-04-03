@@ -7,20 +7,50 @@ open Q2.Domain
 [<RequireQualifiedAccess>]
 type Action =
     | InvalidArguments
-    | RankAutocomplete   of query: string
-    | RunCommand         of userId: string * username: string * region: Region * rank: GameRank
+    | RankAutocomplete of query: string
+    | RunCommand       of userId: string * username: string * region: Region * rank: GameRank
+
+module Metadata =
+    module Options =
+        let Username =
+            StringSubCommandOption.create "username" "Your Epic account username"
+            |> StringSubCommandOption.setRequired
+
+        let Region =
+            StringSubCommandOption.create "region" "Your region"
+            |> StringSubCommandOption.setRequired
+            |> StringSubCommandOption.setChoices [
+                StringSubCommandOptionChoice.create "North America" Region.Serialization.NA
+                StringSubCommandOptionChoice.create "Europe" Region.Serialization.EU
+                StringSubCommandOptionChoice.create "Asia" Region.Serialization.ASIA
+                StringSubCommandOptionChoice.create "Middle East" Region.Serialization.MENA
+                StringSubCommandOptionChoice.create "Oceania" Region.Serialization.OCE
+                StringSubCommandOptionChoice.create "South Africa" Region.Serialization.SAF
+                StringSubCommandOptionChoice.create "South America" Region.Serialization.SAM
+            ]
+
+        let Rank =
+            StringSubCommandOption.create "username" "Your Epic account username"
+            |> StringSubCommandOption.setRequired
+            |> StringSubCommandOption.setAutocomplete
+
+    let Command =
+        ChatInputCommand.create "register" "Register your account information for Q2"
+        |> ChatInputCommand.addOption (SubCommandOption.String Options.Username)
+        |> ChatInputCommand.addOption (SubCommandOption.String Options.Region)
+        |> ChatInputCommand.addOption (SubCommandOption.String Options.Rank)
 
 let (|Validate|_|) (interaction: Interaction) =
     match interaction with
-    | ApplicationCommandAutocomplete "register" { Options = Some (
-        String.Autocomplete "rank" rank
+    | ApplicationCommandAutocomplete Metadata.Command.Name { Options = Some (
+        String.Autocomplete Metadata.Options.Rank.Name rank
     ) } ->
         Some (Action.RankAutocomplete rank)
 
-    | ApplicationCommand "register" { Options = Some (
-        String.Required "username" username &
-        String.Required "region" (Region.Region region) &
-        String.Required "rank" (GameRank.GameRank rank)
+    | ApplicationCommand Metadata.Command.Name { Options = Some (
+        String.Required Metadata.Options.Username.Name username &
+        String.Required Metadata.Options.Region.Name (Region.Region region) &
+        String.Required Metadata.Options.Rank.Name (GameRank.GameRank rank)
     ) } ->
         let userId =
             match interaction.Author with
@@ -29,11 +59,10 @@ let (|Validate|_|) (interaction: Interaction) =
 
         Some (Action.RunCommand(userId, username, region, rank))
 
-    | ApplicationCommand "register" _ ->
+    | ApplicationCommand Metadata.Command.Name _ ->
         Some Action.InvalidArguments
 
     | _ ->
         None
 
 // TODO: Function to run the given actions (?)
-// TODO: How to prevent repeating strings for names of commands and options?

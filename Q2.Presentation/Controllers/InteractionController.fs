@@ -54,6 +54,6 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
             return res
 
         | interaction ->
-            do! InteractionService.handle env interaction
+            do! InteractionHandler.handle env interaction
             return req.CreateResponse HttpStatusCode.Accepted
     }

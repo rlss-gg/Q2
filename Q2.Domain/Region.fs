@@ -32,7 +32,7 @@ module Region =
         | GameServer.SAF -> Region.SAF
         | GameServer.SAM -> Region.SAM
 
-    module Stringified =
+    module Serialization =
         let [<Literal>] NA = "NA"
         let [<Literal>] EU = "EU"
         let [<Literal>] ASIA = "ASIA"
@@ -41,26 +41,27 @@ module Region =
         let [<Literal>] SAF = "SAF"
         let [<Literal>] SAM = "SAM"
 
+        let mapping =
+            Map.empty
+            |> Map.add Region.NA NA
+            |> Map.add Region.EU EU
+            |> Map.add Region.ASIA ASIA
+            |> Map.add Region.MENA MENA
+            |> Map.add Region.OCE OCE
+            |> Map.add Region.SAF SAF
+            |> Map.add Region.SAM SAM
+
+        let keys =
+            mapping |> Map.keys |> Seq.toList
+
+        let values =
+            mapping |> Map.values |> Seq.toList
+
     let toString (v: Region) =
-        match v with
-        | Region.NA -> Stringified.NA
-        | Region.EU -> Stringified.EU
-        | Region.ASIA -> Stringified.ASIA
-        | Region.MENA -> Stringified.MENA
-        | Region.OCE -> Stringified.OCE
-        | Region.SAF -> Stringified.SAF
-        | Region.SAM -> Stringified.SAM
+        Serialization.mapping |> Map.pick (fun k s -> if k = v then Some s else None)
 
     let fromString (v: string) =
-        match v with
-        | Stringified.NA -> Some Region.NA
-        | Stringified.EU -> Some Region.EU
-        | Stringified.ASIA -> Some Region.ASIA
-        | Stringified.MENA -> Some Region.MENA
-        | Stringified.OCE -> Some Region.OCE
-        | Stringified.SAF -> Some Region.SAF
-        | Stringified.SAM -> Some Region.SAM
-        | _ -> None
+        Serialization.mapping |> Map.tryFindKey (fun _ s -> s = v)
 
     let (|Region|_|) (v: string) =
         fromString v
