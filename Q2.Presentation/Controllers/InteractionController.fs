@@ -30,7 +30,7 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
         match signature, timestamp with
         | None, None | None, Some _ | Some _, None -> return req.CreateResponse HttpStatusCode.Unauthorized
         | Some signature, Some timestamp ->
-        
+
         // Validate signature
         match Ed25519.verify timestamp json signature env.DiscordPublicKey with
         | false -> return req.CreateResponse HttpStatusCode.Unauthorized
@@ -40,17 +40,18 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
         match Decode.fromString Interaction.decoder json with
         | Error _ -> return req.CreateResponse HttpStatusCode.BadRequest
         | Ok interaction ->
-
+        
         // Handle interaction
         match interaction with
         | Ping ->
             let callback = { Type = InteractionCallbackType.PONG; Data = None }
             let body = Encode.toString 0 (InteractionResponse.encoder callback)
-            
+
             let res = req.CreateResponse HttpStatusCode.OK
+            res.Headers.Add("Content-Type", "application/json")
             do! res.WriteStringAsync body
             return res
-
+        
         | interaction ->
             do! InteractionHandler.handle env interaction
             return req.CreateResponse HttpStatusCode.Accepted
