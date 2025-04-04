@@ -2,6 +2,7 @@
 
 open FSharp.Discord.Rest
 open FSharp.Discord.Types
+open Q2.Domain
 open System.Threading.Tasks
 
 let handle (env: #IHttp & #ISecrets) interaction = task {
@@ -39,7 +40,15 @@ let handle (env: #IHttp & #ISecrets) interaction = task {
                 CreateInteractionResponsePayload({
                     Type = InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
                     Data = Some (InteractionCallbackData.AUTOCOMPLETE {
-                        Choices = []
+                        Choices =
+                            GameRank.Serialization.values
+                            |> List.filter (fun v -> v.ToLower().Contains(query.ToLower()))
+                            |> List.map (fun v -> {
+                                Name = v
+                                NameLocalizations = None
+                                Value = ApplicationCommandOptionChoiceValue.STRING v
+                            })
+                            |> List.truncate 25
                     })
                 }))
 

@@ -39,7 +39,7 @@ type GameRank =
     | GrandChampion of elo: int option
 
 module GameRank =
-    module Stringified =
+    module Serialization =
         let [<Literal>] BronzeI = "Bronze I"
         let [<Literal>] BronzeII = "Bronze II"
         let [<Literal>] BronzeIII = "Bronze III"
@@ -74,40 +74,50 @@ module GameRank =
 
         let grandChampionElo (elo: int) = $"Grand Champion ({elo})"
 
+        let mapping =
+            Map.empty
+            |> Map.add GameRank.BronzeI BronzeI
+            |> Map.add GameRank.BronzeII BronzeII
+            |> Map.add GameRank.BronzeIII BronzeIII
+            |> Map.add GameRank.BronzeIV BronzeIV
+            |> Map.add GameRank.BronzeV BronzeV
+            |> Map.add GameRank.SilverI SilverI
+            |> Map.add GameRank.SilverII SilverII
+            |> Map.add GameRank.SilverIII SilverIII
+            |> Map.add GameRank.SilverIV SilverIV
+            |> Map.add GameRank.SilverV SilverV
+            |> Map.add GameRank.GoldI GoldI
+            |> Map.add GameRank.GoldII GoldII
+            |> Map.add GameRank.GoldIII GoldIII
+            |> Map.add GameRank.GoldIV GoldIV
+            |> Map.add GameRank.GoldV GoldV
+            |> Map.add GameRank.PlatinumI PlatinumI
+            |> Map.add GameRank.PlatinumII PlatinumII
+            |> Map.add GameRank.PlatinumIII PlatinumIII
+            |> Map.add GameRank.PlatinumIV PlatinumIV
+            |> Map.add GameRank.PlatinumV PlatinumV
+            |> Map.add GameRank.DiamondI DiamondI
+            |> Map.add GameRank.DiamondII DiamondII
+            |> Map.add GameRank.DiamondIII DiamondIII
+            |> Map.add GameRank.DiamondIV DiamondIV
+            |> Map.add GameRank.DiamondV DiamondV
+            |> Map.add GameRank.ChampionI ChampionI
+            |> Map.add GameRank.ChampionII ChampionII
+            |> Map.add GameRank.ChampionIII ChampionIII
+            |> Map.add GameRank.ChampionIV ChampionIV
+            |> Map.add GameRank.ChampionV ChampionV
+            |> Map.add (GameRank.GrandChampion None) GrandChampion
+
+        let keys =
+            mapping |> Map.keys |> Seq.toList
+
+        let values =
+            mapping |> Map.values |> Seq.toList
+
     let toString (v: GameRank) =
         match v with
-        | GameRank.BronzeI -> Stringified.BronzeI
-        | GameRank.BronzeII -> Stringified.BronzeII
-        | GameRank.BronzeIII -> Stringified.BronzeIII
-        | GameRank.BronzeIV -> Stringified.BronzeIV
-        | GameRank.BronzeV -> Stringified.BronzeV
-        | GameRank.SilverI -> Stringified.SilverI
-        | GameRank.SilverII -> Stringified.SilverII
-        | GameRank.SilverIII -> Stringified.SilverIII
-        | GameRank.SilverIV -> Stringified.SilverIV
-        | GameRank.SilverV -> Stringified.SilverV
-        | GameRank.GoldI -> Stringified.GoldI
-        | GameRank.GoldII -> Stringified.GoldII
-        | GameRank.GoldIII -> Stringified.GoldIII
-        | GameRank.GoldIV -> Stringified.GoldIV
-        | GameRank.GoldV -> Stringified.GoldV
-        | GameRank.PlatinumI -> Stringified.PlatinumI
-        | GameRank.PlatinumII -> Stringified.PlatinumII
-        | GameRank.PlatinumIII -> Stringified.PlatinumIII
-        | GameRank.PlatinumIV -> Stringified.PlatinumIV
-        | GameRank.PlatinumV -> Stringified.PlatinumV
-        | GameRank.DiamondI -> Stringified.DiamondI
-        | GameRank.DiamondII -> Stringified.DiamondII
-        | GameRank.DiamondIII -> Stringified.DiamondIII
-        | GameRank.DiamondIV -> Stringified.DiamondIV
-        | GameRank.DiamondV -> Stringified.DiamondV
-        | GameRank.ChampionI -> Stringified.ChampionI
-        | GameRank.ChampionII -> Stringified.ChampionII
-        | GameRank.ChampionIII -> Stringified.ChampionIII
-        | GameRank.ChampionIV -> Stringified.ChampionIV
-        | GameRank.ChampionV -> Stringified.ChampionV
-        | GameRank.GrandChampion None -> Stringified.GrandChampion
-        | GameRank.GrandChampion (Some elo) -> Stringified.grandChampionElo elo
+        | GameRank.GrandChampion (Some elo) -> Serialization.grandChampionElo elo
+        | rank -> Serialization.mapping |> Map.pick (fun k s -> if k = rank then Some s else None)
 
     let fromString (str: string) =
         let (|GrandChampionElo|_|) (str: string) =
@@ -122,39 +132,8 @@ module GameRank =
             | _ -> None
 
         match str with
-        | Stringified.BronzeI -> Some GameRank.BronzeI
-        | Stringified.BronzeII -> Some GameRank.BronzeII
-        | Stringified.BronzeIII -> Some GameRank.BronzeIII
-        | Stringified.BronzeIV -> Some GameRank.BronzeIV
-        | Stringified.BronzeV -> Some GameRank.BronzeV
-        | Stringified.SilverI -> Some GameRank.SilverI
-        | Stringified.SilverII -> Some GameRank.SilverII
-        | Stringified.SilverIII -> Some GameRank.SilverIII
-        | Stringified.SilverIV -> Some GameRank.SilverIV
-        | Stringified.SilverV -> Some GameRank.SilverV
-        | Stringified.GoldI -> Some GameRank.GoldI
-        | Stringified.GoldII -> Some GameRank.GoldII
-        | Stringified.GoldIII -> Some GameRank.GoldIII
-        | Stringified.GoldIV -> Some GameRank.GoldIV
-        | Stringified.GoldV -> Some GameRank.GoldV
-        | Stringified.PlatinumI -> Some GameRank.PlatinumI
-        | Stringified.PlatinumII -> Some GameRank.PlatinumII
-        | Stringified.PlatinumIII -> Some GameRank.PlatinumIII
-        | Stringified.PlatinumIV -> Some GameRank.PlatinumIV
-        | Stringified.PlatinumV -> Some GameRank.PlatinumV
-        | Stringified.DiamondI -> Some GameRank.DiamondI
-        | Stringified.DiamondII -> Some GameRank.DiamondII
-        | Stringified.DiamondIII -> Some GameRank.DiamondIII
-        | Stringified.DiamondIV -> Some GameRank.DiamondIV
-        | Stringified.DiamondV -> Some GameRank.DiamondV
-        | Stringified.ChampionI -> Some GameRank.ChampionI
-        | Stringified.ChampionII -> Some GameRank.ChampionII
-        | Stringified.ChampionIII -> Some GameRank.ChampionIII
-        | Stringified.ChampionIV -> Some GameRank.ChampionIV
-        | Stringified.ChampionV -> Some GameRank.ChampionV
-        | Stringified.GrandChampion -> Some (GameRank.GrandChampion None)
         | GrandChampionElo rank -> Some rank
-        | _ -> None
+        | v -> Serialization.mapping |> Map.tryFindKey (fun _ s -> s = v)
 
     let (|GameRank|_|) (str: string) =
         fromString str
@@ -170,7 +149,7 @@ type GameMode =
     | Squash
 
 module GameMode =
-    module Stringified =
+    module Serialization =
         let [<Literal>] Duel = "Duel"
         let [<Literal>] Doubles = "Doubles"
         let [<Literal>] Threes = "Threes"
@@ -178,24 +157,26 @@ module GameMode =
         let [<Literal>] Volleyball = "Volleyball"
         let [<Literal>] Squash = "Squash"
 
-    let toString (v: GameMode) =
-        match v with
-        | GameMode.Duel -> Stringified.Duel
-        | GameMode.Doubles -> Stringified.Doubles
-        | GameMode.Threes -> Stringified.Threes
-        | GameMode.Hoops -> Stringified.Hoops
-        | GameMode.Volleyball -> Stringified.Volleyball
-        | GameMode.Squash -> Stringified.Squash
+        let mapping =
+            Map.empty
+            |> Map.add GameMode.Duel Duel
+            |> Map.add GameMode.Doubles Doubles
+            |> Map.add GameMode.Threes Threes
+            |> Map.add GameMode.Hoops Hoops
+            |> Map.add GameMode.Volleyball Volleyball
+            |> Map.add GameMode.Squash Squash
 
-    let fromString (str: string) =
-        match str with
-        | Stringified.Duel -> Some GameMode.Duel
-        | Stringified.Doubles -> Some GameMode.Doubles
-        | Stringified.Threes -> Some GameMode.Threes
-        | Stringified.Hoops -> Some GameMode.Hoops
-        | Stringified.Volleyball -> Some GameMode.Volleyball
-        | Stringified.Squash -> Some GameMode.Squash
-        | _ -> None
+        let keys =
+            mapping |> Map.keys |> Seq.toList
+
+        let values =
+            mapping |> Map.values |> Seq.toList
+            
+    let toString (v: GameMode) =
+        Serialization.mapping |> Map.pick (fun k s -> if k = v then Some s else None)
+
+    let fromString (v: string) =
+        Serialization.mapping |> Map.tryFindKey (fun _ s -> s = v)
 
     let (|GameMode|_|) (str: string) =
         fromString str
@@ -216,7 +197,7 @@ type GameServer =
     | IND
 
 module GameServer =
-    module Stringified =
+    module Serialization =
         let [<Literal>] USE = "USE"
         let [<Literal>] USW = "USW"
         let [<Literal>] USC = "USC"
@@ -228,35 +209,32 @@ module GameServer =
         let [<Literal>] SAF = "SAF"
         let [<Literal>] SAM = "SAM"
         let [<Literal>] IND = "IND"
+        
+        let mapping =
+            Map.empty
+            |> Map.add GameServer.USE USE
+            |> Map.add GameServer.USW USW
+            |> Map.add GameServer.USC USC
+            |> Map.add GameServer.EU EU
+            |> Map.add GameServer.ASC ASC
+            |> Map.add GameServer.ASM ASM
+            |> Map.add GameServer.ME ME
+            |> Map.add GameServer.OCE OCE
+            |> Map.add GameServer.SAF SAF
+            |> Map.add GameServer.SAM SAM
+            |> Map.add GameServer.IND IND
 
+        let keys =
+            mapping |> Map.keys |> Seq.toList
+
+        let values =
+            mapping |> Map.values |> Seq.toList
+            
     let toString (v: GameServer) =
-        match v with
-        | GameServer.USE -> Stringified.USE
-        | GameServer.USW -> Stringified.USW
-        | GameServer.USC -> Stringified.USC
-        | GameServer.EU -> Stringified.EU
-        | GameServer.ASC -> Stringified.ASC
-        | GameServer.ASM -> Stringified.ASM
-        | GameServer.ME -> Stringified.ME
-        | GameServer.OCE -> Stringified.OCE
-        | GameServer.SAF -> Stringified.SAF
-        | GameServer.SAM -> Stringified.SAM
-        | GameServer.IND -> Stringified.IND
+        Serialization.mapping |> Map.pick (fun k s -> if k = v then Some s else None)
 
-    let fromString (str: string) =
-        match str with
-        | Stringified.USE -> Some GameServer.USE
-        | Stringified.USW -> Some GameServer.USW
-        | Stringified.USC -> Some GameServer.USC
-        | Stringified.EU -> Some GameServer.EU
-        | Stringified.ASC -> Some GameServer.ASC
-        | Stringified.ASM -> Some GameServer.ASM
-        | Stringified.ME -> Some GameServer.ME
-        | Stringified.OCE -> Some GameServer.OCE
-        | Stringified.SAF -> Some GameServer.SAF
-        | Stringified.SAM -> Some GameServer.SAM
-        | Stringified.IND -> Some GameServer.IND
-        | _ -> None
+    let fromString (v: string) =
+        Serialization.mapping |> Map.tryFindKey (fun _ s -> s = v)
 
     let (|GameServer|_|) (str: string) =
         fromString str

@@ -25,7 +25,7 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
         let timestamp =
             req.Headers.TryGetValues "x-signature-timestamp"
             |> fun (success, v) -> match success with | true -> Seq.tryHead v | false -> None
-
+            
         // Ensure headers are present
         match signature, timestamp with
         | None, None | None, Some _ | Some _, None -> return req.CreateResponse HttpStatusCode.Unauthorized
@@ -35,10 +35,15 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
         match Ed25519.verify timestamp json signature env.DiscordPublicKey with
         | false -> return req.CreateResponse HttpStatusCode.Unauthorized
         | _ ->
+
+        System.Console.WriteLine json // Temporary, for debugging
             
         // Read interaction from body
         match Decode.fromString Interaction.decoder json with
-        | Error _ -> return req.CreateResponse HttpStatusCode.BadRequest
+        | Error err ->
+            System.Console.Error.WriteLine err // Temporary, for debugging
+            return req.CreateResponse HttpStatusCode.BadRequest
+
         | Ok interaction ->
         
         // Handle interaction

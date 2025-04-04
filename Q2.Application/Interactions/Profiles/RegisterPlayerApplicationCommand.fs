@@ -30,7 +30,7 @@ module Metadata =
             ]
 
         let Rank =
-            StringSubCommandOption.create "username" "Your Epic account username"
+            StringSubCommandOption.create "rank" "Your current in-game rank"
             |> StringSubCommandOption.setRequired
             |> StringSubCommandOption.setAutocomplete
 
@@ -62,7 +62,6 @@ let (|Validate|_|) (interaction: Interaction) =
     | ApplicationCommand Metadata.Command.Name _ ->
         Some Action.InvalidArguments
 
-    | _ ->
-        None
+    | _ -> None
 
 // TODO: Function to run the given actions (?)
