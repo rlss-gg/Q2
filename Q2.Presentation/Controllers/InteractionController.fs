@@ -1,17 +1,18 @@
 ﻿namespace Q2.Presentation
 
 open FSharp.Discord.Commands
+open FSharp.Discord.Rest
 open FSharp.Discord.Types
 open FSharp.Discord.Types.Serialization
 open FSharp.Discord.Webhook
 open Microsoft.Azure.Functions.Worker
 open Microsoft.Azure.Functions.Worker.Http
-open Microsoft.Extensions.Configuration
 open Q2.Application
 open System.Net
+open System.Threading.Tasks
 open Thoth.Json.Net
 
-type InteractionController (configuration: IConfiguration, env: IEnv) =
+type InteractionController (env: IEnv) =
     [<Function "PostInteraction">]
     member _.Post (
         [<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "interactions")>] req: HttpRequestData
@@ -47,17 +48,42 @@ type InteractionController (configuration: IConfiguration, env: IEnv) =
         | Ok interaction ->
         
         // Handle interaction
+        let client = env.BotClient env.DiscordBotToken
+
         match interaction with
         | Ping ->
-            let callback = { Type = InteractionCallbackType.PONG; Data = None }
-            let body = Encode.toString 0 (InteractionResponse.encoder callback)
-
             let res = req.CreateResponse HttpStatusCode.OK
             res.Headers.Add("Content-Type", "application/json")
-            do! res.WriteStringAsync body
+            do! res.WriteStringAsync CommonResponse.ping
             return res
+            
+        | RegisterPlayerApplicationCommand.Validate action ->
+            match action with
+            | RegisterPlayerApplicationCommand.Action.InvalidArguments ->
+                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
+                do! Rest.createInteractionResponse response client :> Task
+                return req.CreateResponse HttpStatusCode.NoContent
+                
+            | RegisterPlayerApplicationCommand.Action.RankAutocomplete query ->
+                let choices = RankAutocompleteUseCase.run { Query = query }
+                let response = RegisterPlayerResponse.rankAutocomplete interaction.Id interaction.Token choices
+                do! Rest.createInteractionResponse response client :> Task
+                return req.CreateResponse HttpStatusCode.NoContent
+
+            | RegisterPlayerApplicationCommand.Action.RunCommand (userId, username, region, rank) ->
+                let data = { Id = userId; Username = username; Region = region; Rank = rank }
+
+                match! RegisterPlayerUseCase.run env data with
+                | Error RegisterPlayerUseCaseError.PlayerAlreadyRegistered ->
+                    let response = CommonResponse.failed interaction.Id interaction.Token
+                    do! Rest.createInteractionResponse response client :> Task
+                    return req.CreateResponse HttpStatusCode.NoContent
+
+                | Ok player ->
+                    let response = RegisterPlayerResponse.runCommand interaction.Id interaction.Token player
+                    do! Rest.createInteractionResponse response client :> Task
+                    return req.CreateResponse HttpStatusCode.NoContent
         
-        | interaction ->
-            do! InteractionHandler.handle env interaction
-            return req.CreateResponse HttpStatusCode.Accepted
+        | _ ->
+            return req.CreateResponse HttpStatusCode.BadRequest
     }

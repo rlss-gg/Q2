@@ -1,7 +1,7 @@
 ﻿open FSharp.Discord.Commands
 open FSharp.Discord.Rest
 open Microsoft.Extensions.DependencyInjection
-open Q2.Application
+open Q2.Presentation
 open System
 open System.Net.Http
 

@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Responses\CommonResponse.fs" />
+    <Compile Include="Responses\Commands\RegisterPlayerResponse.fs" />
+    <Compile Include="Interactions\Profiles\RegisterPlayerApplicationCommand.fs" />
     <Compile Include="Controllers\InteractionController.fs" />
   </ItemGroup>
 

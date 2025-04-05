@@ -1,4 +1,4 @@
-﻿module Q2.Application.RegisterPlayerApplicationCommand
+﻿module Q2.Presentation.RegisterPlayerApplicationCommand
 
 open FSharp.Discord.Commands
 open FSharp.Discord.Types
@@ -63,5 +63,3 @@ let (|Validate|_|) (interaction: Interaction) =
         Some Action.InvalidArguments
 
     | _ -> None
-
-// TODO: Function to run the given actions (?)

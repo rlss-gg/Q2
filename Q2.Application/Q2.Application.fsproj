@@ -12,6 +12,7 @@
     <Compile Include="Abstractions\ISecrets.fs" />
     <Compile Include="Abstractions\ITime.fs" />
     <Compile Include="Abstractions\IEnv.fs" />
+    <Compile Include="UseCases\Autocompletes\RankAutocompleteUseCase.fs" />
     <Compile Include="UseCases\Profiles\RegisterPlayerUseCase.fs" />
     <Compile Include="UseCases\Profiles\ToggleNotificationsUseCase.fs" />
     <Compile Include="UseCases\Profiles\ViewProfileUseCase.fs" />
@@ -26,8 +27,6 @@
     <Compile Include="UseCases\Matchmaking\JoinQueueUseCase.fs" />
     <Compile Include="UseCases\Matchmaking\LeaveQueueUseCase.fs" />
     <Compile Include="UseCases\Matchmaking\ReportMatchUseCase.fs" />
-    <Compile Include="Interactions\Profiles\RegisterPlayerApplicationCommand.fs" />
-    <Compile Include="Interactions\InteractionHandler.fs" />
   </ItemGroup>
 
   <ItemGroup>
