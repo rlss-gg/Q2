@@ -8,7 +8,13 @@
   <ItemGroup>
     <Compile Include="Responses\CommonResponse.fs" />
     <Compile Include="Responses\Commands\RegisterPlayerResponse.fs" />
-    <Compile Include="Interactions\Profiles\RegisterPlayerApplicationCommand.fs" />
+    <Compile Include="Responses\Commands\PlayerSettingsResponse.fs" />
+    <Compile Include="Responses\Commands\PlayerProfileResponse.fs" />
+    <Compile Include="Responses\Commands\UserManagementResponse.fs" />
+    <Compile Include="Interactions\Profiles\RegisterPlayerCommand.fs" />
+    <Compile Include="Interactions\Profiles\PlayerSettingsCommand.fs" />
+    <Compile Include="Interactions\Profiles\PlayerProfileCommand.fs" />
+    <Compile Include="Interactions\Profiles\UserManagementCommand.fs" />
     <Compile Include="Controllers\InteractionController.fs" />
   </ItemGroup>
 

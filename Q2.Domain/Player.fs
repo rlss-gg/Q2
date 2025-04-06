@@ -10,6 +10,7 @@ type PlayerRanks = {
     Primary: GameRank option
     Modes: Map<GameMode, GameRank>
     LastUpdateAt: DateTime option
+    VerifiedGcAt: DateTime option
 }
 
 type Player = {
@@ -33,6 +34,7 @@ module Player =
                 Primary = None
                 Modes = Map.empty
                 LastUpdateAt = None
+                VerifiedGcAt = None
             }
             Elo = None
             Settings = {
@@ -75,6 +77,15 @@ module Player =
                 LastUpdateAt = Some currentTime }
 
         { player with Ranks = ranks }
+
+    let verifyGc currentTime player =
+        let ranks = { player.Ranks with VerifiedGcAt = Some currentTime }
+        { player with Ranks = ranks }
+
+    let isVerifiedGc player =
+        match player.Ranks.Primary, player.Ranks.VerifiedGcAt with
+        | Some (GameRank.GrandChampion _), Some _ -> true
+        | _ -> false
 
     let setRanks ranks currentTime player =
         let ranks =

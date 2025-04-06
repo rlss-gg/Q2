@@ -15,7 +15,7 @@
     <Compile Include="UseCases\Autocompletes\RankAutocompleteUseCase.fs" />
     <Compile Include="UseCases\Profiles\RegisterPlayerUseCase.fs" />
     <Compile Include="UseCases\Profiles\ToggleNotificationsUseCase.fs" />
-    <Compile Include="UseCases\Profiles\ViewProfileUseCase.fs" />
+    <Compile Include="UseCases\Profiles\GetPlayerUserCase.fs" />
     <Compile Include="UseCases\Profiles\VerifyPlayerGcUseCase.fs" />
     <Compile Include="UseCases\Management\CreateRankUseCase.fs" />
     <Compile Include="UseCases\Management\UpdateRankNameUseCase.fs" />

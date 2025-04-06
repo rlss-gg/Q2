@@ -42,3 +42,20 @@ let failed id token =
     })
 
     CreateInteractionResponseRequest(id, token, payload)
+
+let notRegistered id token =
+    let payload = CreateInteractionResponsePayload({
+        Type = InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE
+        Data = Some (InteractionCallbackData.MESSAGE {
+            Tts = None
+            Content = Some "You cannot use this command before registering."
+            Embeds = None
+            AllowedMentions = None
+            Flags = Some [MessageFlag.EPHEMERAL]
+            Components = None
+            Attachments = None
+            Poll = None
+        })
+    })
+
+    CreateInteractionResponseRequest(id, token, payload)

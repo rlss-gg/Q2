@@ -50,6 +50,11 @@ type InteractionController (env: IEnv) =
         // Handle interaction
         let client = env.BotClient env.DiscordBotToken
 
+        let respond (response: CreateInteractionResponseRequest) = task {
+            do! Rest.createInteractionResponse response client :> Task
+            return req.CreateResponse HttpStatusCode.NoContent
+        }
+
         match interaction with
         | Ping ->
             let res = req.CreateResponse HttpStatusCode.OK
@@ -57,32 +62,86 @@ type InteractionController (env: IEnv) =
             do! res.WriteStringAsync CommonResponse.ping
             return res
             
-        | RegisterPlayerApplicationCommand.Validate action ->
+        | RegisterPlayerCommand.Validate action ->
             match action with
-            | RegisterPlayerApplicationCommand.Action.InvalidArguments ->
+            | RegisterPlayerCommand.Action.InvalidArguments ->
                 let response = CommonResponse.invalidArguments interaction.Id interaction.Token
-                do! Rest.createInteractionResponse response client :> Task
-                return req.CreateResponse HttpStatusCode.NoContent
+                return! respond response
                 
-            | RegisterPlayerApplicationCommand.Action.RankAutocomplete query ->
+            | RegisterPlayerCommand.Action.RankAutocomplete query ->
                 let choices = RankAutocompleteUseCase.run { Query = query }
                 let response = RegisterPlayerResponse.rankAutocomplete interaction.Id interaction.Token choices
-                do! Rest.createInteractionResponse response client :> Task
-                return req.CreateResponse HttpStatusCode.NoContent
+                return! respond response
 
-            | RegisterPlayerApplicationCommand.Action.RunCommand (userId, username, region, rank) ->
-                let data = { Id = userId; Username = username; Region = region; Rank = rank }
+            | RegisterPlayerCommand.Action.RunCommand (userId, username, region, rank) ->
+                let data: RegisterPlayerUseCase = { Id = userId; Username = username; Region = region; Rank = rank }
 
                 match! RegisterPlayerUseCase.run env data with
                 | Error RegisterPlayerUseCaseError.PlayerAlreadyRegistered ->
                     let response = CommonResponse.failed interaction.Id interaction.Token
-                    do! Rest.createInteractionResponse response client :> Task
-                    return req.CreateResponse HttpStatusCode.NoContent
+                    return! respond response
 
                 | Ok player ->
                     let response = RegisterPlayerResponse.runCommand interaction.Id interaction.Token player
-                    do! Rest.createInteractionResponse response client :> Task
-                    return req.CreateResponse HttpStatusCode.NoContent
+                    return! respond response
+
+        | PlayerSettingsCommand.Validate action ->
+            match action with
+            | PlayerSettingsCommand.Action.InvalidArguments ->
+                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
+                return! respond response
+
+            | PlayerSettingsCommand.Action.ToggleNotifications userId ->
+                let data: ToggleNotificationUseCase = { Id = userId }
+
+                match! ToggleNotificationUseCase.run env data with
+                | Error ToggleNotificationUseCaseError.PlayerNotFound ->
+                    let response = CommonResponse.notRegistered interaction.Id interaction.Token
+                    return! respond response
+
+                | Ok player ->
+                    let response = PlayerSettingsResponse.notifications interaction.Id interaction.Token player.Settings.QueueNotificationsEnabled
+                    return! respond response
+
+        | PlayerProfileCommand.Validate action ->
+            match action with
+            | PlayerProfileCommand.Action.InvalidArguments ->
+                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
+                return! respond response
+
+            | PlayerProfileCommand.Action.ViewProfile userId ->
+                let data: GetPlayerUseCase = { Id = userId }
+
+                match! GetPlayerUseCase.run env data with
+                | Error GetPlayerUseCaseError.PlayerNotFound ->
+                    let response = CommonResponse.notRegistered interaction.Id interaction.Token
+                    return! respond response
+
+                | Ok player ->
+                    let response = PlayerProfileResponse.profile interaction.Id interaction.Token player
+                    return! respond response
+
+        | UserManagementCommand.Validate action ->
+            match action with
+            | UserManagementCommand.Action.InvalidArguments ->
+                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
+                return! respond response
+
+            | UserManagementCommand.Action.VerifyGc userId ->
+                let data: VerifyPlayerGcUseCase = { Id = userId }
+
+                match! VerifyPlayerGcUseCase.run env data with
+                | Error VerifyPlayerGcUseCaseError.PlayerNotFound ->
+                    let response = CommonResponse.notRegistered interaction.Id interaction.Token
+                    return! respond response
+
+                | Error VerifyPlayerGcUseCaseError.PrimaryRankNotGc ->
+                    let response = UserManagementResponse.playerNotGc interaction.Id interaction.Token
+                    return! respond response
+
+                | Ok player ->
+                    let response = UserManagementResponse.verifyGc interaction.Id interaction.Token player
+                    return! respond response
         
         | _ ->
             return req.CreateResponse HttpStatusCode.BadRequest

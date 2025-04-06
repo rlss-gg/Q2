@@ -6,7 +6,7 @@ open System
 open System.Net.Http
 
 let commands = [
-    Command.ChatInput RegisterPlayerApplicationCommand.Metadata.Command
+    Command.ChatInput RegisterPlayerCommand.Metadata.Command
 ]
 
 let globalCommands =
