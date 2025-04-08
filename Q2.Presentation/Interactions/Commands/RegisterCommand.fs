@@ -1,4 +1,4 @@
-﻿module Q2.Presentation.RegisterPlayerCommand
+﻿module Q2.Presentation.RegisterCommand
 
 open FSharp.Discord.Commands
 open FSharp.Discord.Types

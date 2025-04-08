@@ -1,4 +1,4 @@
-﻿module Q2.Presentation.PlayerProfileCommand
+﻿module Q2.Presentation.ProfileCommand
 
 open FSharp.Discord.Commands
 open FSharp.Discord.Types

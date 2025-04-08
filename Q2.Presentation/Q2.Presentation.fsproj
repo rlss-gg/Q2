@@ -11,10 +11,10 @@
     <Compile Include="Responses\Commands\PlayerSettingsResponse.fs" />
     <Compile Include="Responses\Commands\PlayerProfileResponse.fs" />
     <Compile Include="Responses\Commands\UserManagementResponse.fs" />
-    <Compile Include="Interactions\Profiles\RegisterPlayerCommand.fs" />
-    <Compile Include="Interactions\Profiles\PlayerSettingsCommand.fs" />
-    <Compile Include="Interactions\Profiles\PlayerProfileCommand.fs" />
-    <Compile Include="Interactions\Profiles\UserManagementCommand.fs" />
+    <Compile Include="Interactions\Commands\RegisterCommand.fs" />
+    <Compile Include="Interactions\Commands\SettingsCommand.fs" />
+    <Compile Include="Interactions\Commands\ProfileCommand.fs" />
+    <Compile Include="Interactions\Commands\UserCommand.fs" />
     <Compile Include="Controllers\InteractionController.fs" />
   </ItemGroup>
 

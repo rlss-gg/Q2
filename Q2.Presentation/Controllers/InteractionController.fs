@@ -62,18 +62,18 @@ type InteractionController (env: IEnv) =
             do! res.WriteStringAsync CommonResponse.ping
             return res
             
-        | RegisterPlayerCommand.Validate action ->
+        | RegisterCommand.Validate action ->
             match action with
-            | RegisterPlayerCommand.Action.InvalidArguments ->
+            | RegisterCommand.Action.InvalidArguments ->
                 let response = CommonResponse.invalidArguments interaction.Id interaction.Token
                 return! respond response
                 
-            | RegisterPlayerCommand.Action.RankAutocomplete query ->
+            | RegisterCommand.Action.RankAutocomplete query ->
                 let choices = RankAutocompleteUseCase.run { Query = query }
                 let response = RegisterPlayerResponse.rankAutocomplete interaction.Id interaction.Token choices
                 return! respond response
 
-            | RegisterPlayerCommand.Action.RunCommand (userId, username, region, rank) ->
+            | RegisterCommand.Action.RunCommand (userId, username, region, rank) ->
                 let data: RegisterPlayerUseCase = { Id = userId; Username = username; Region = region; Rank = rank }
 
                 match! RegisterPlayerUseCase.run env data with
@@ -85,13 +85,13 @@ type InteractionController (env: IEnv) =
                     let response = RegisterPlayerResponse.runCommand interaction.Id interaction.Token player
                     return! respond response
 
-        | PlayerSettingsCommand.Validate action ->
+        | SettingsCommand.Validate action ->
             match action with
-            | PlayerSettingsCommand.Action.InvalidArguments ->
+            | SettingsCommand.Action.InvalidArguments ->
                 let response = CommonResponse.invalidArguments interaction.Id interaction.Token
                 return! respond response
 
-            | PlayerSettingsCommand.Action.ToggleNotifications userId ->
+            | SettingsCommand.Action.ToggleNotifications userId ->
                 let data: ToggleNotificationUseCase = { Id = userId }
 
                 match! ToggleNotificationUseCase.run env data with
@@ -103,13 +103,13 @@ type InteractionController (env: IEnv) =
                     let response = PlayerSettingsResponse.notifications interaction.Id interaction.Token player.Settings.QueueNotificationsEnabled
                     return! respond response
 
-        | PlayerProfileCommand.Validate action ->
+        | ProfileCommand.Validate action ->
             match action with
-            | PlayerProfileCommand.Action.InvalidArguments ->
+            | ProfileCommand.Action.InvalidArguments ->
                 let response = CommonResponse.invalidArguments interaction.Id interaction.Token
                 return! respond response
 
-            | PlayerProfileCommand.Action.ViewProfile userId ->
+            | ProfileCommand.Action.ViewProfile userId ->
                 let data: GetPlayerUseCase = { Id = userId }
 
                 match! GetPlayerUseCase.run env data with
@@ -121,13 +121,13 @@ type InteractionController (env: IEnv) =
                     let response = PlayerProfileResponse.profile interaction.Id interaction.Token player
                     return! respond response
 
-        | UserManagementCommand.Validate action ->
+        | UserCommand.Validate action ->
             match action with
-            | UserManagementCommand.Action.InvalidArguments ->
+            | UserCommand.Action.InvalidArguments ->
                 let response = CommonResponse.invalidArguments interaction.Id interaction.Token
                 return! respond response
 
-            | UserManagementCommand.Action.VerifyGc userId ->
+            | UserCommand.Action.VerifyGc userId ->
                 let data: VerifyPlayerGcUseCase = { Id = userId }
 
                 match! VerifyPlayerGcUseCase.run env data with

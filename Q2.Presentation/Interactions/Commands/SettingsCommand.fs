@@ -1,4 +1,4 @@
-﻿module Q2.Presentation.PlayerSettingsCommand
+﻿module Q2.Presentation.SettingsCommand
 
 open FSharp.Discord.Commands
 open FSharp.Discord.Types

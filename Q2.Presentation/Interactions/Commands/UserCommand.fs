@@ -1,4 +1,4 @@
-﻿module Q2.Presentation.UserManagementCommand
+﻿module Q2.Presentation.UserCommand
 
 open FSharp.Discord.Commands
 open FSharp.Discord.Types
