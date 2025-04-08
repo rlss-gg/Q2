@@ -36,6 +36,8 @@ module Metadata =
 
     let Command =
         ChatInputCommand.create "register" "Register your account information for Q2"
+        |> ChatInputCommand.setContexts [InteractionContextType.GUILD]
+        |> ChatInputCommand.setIntegrations [ApplicationIntegrationType.GUILD_INSTALL]
         |> ChatInputCommand.addOption (SubCommandOption.String Options.Username)
         |> ChatInputCommand.addOption (SubCommandOption.String Options.Region)
         |> ChatInputCommand.addOption (SubCommandOption.String Options.Rank)

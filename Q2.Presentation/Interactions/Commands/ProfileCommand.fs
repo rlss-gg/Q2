@@ -16,6 +16,8 @@ module Metadata =
 
     let Command =
         ChatInputCommand.create "profile" "Change or update settings on your account"
+        |> ChatInputCommand.setContexts [InteractionContextType.GUILD]
+        |> ChatInputCommand.setIntegrations [ApplicationIntegrationType.GUILD_INSTALL]
         |> ChatInputCommand.addOption (SubCommandOption.User Options.User)
 
 let (|Validate|_|) (interaction: Interaction) =

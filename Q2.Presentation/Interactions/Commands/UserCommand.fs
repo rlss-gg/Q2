@@ -26,6 +26,9 @@ module Metadata =
 
     let Command =
         ChatInputCommand.create "user" "Manage users"
+        |> ChatInputCommand.setAdministratorOnly
+        |> ChatInputCommand.setContexts [InteractionContextType.GUILD]
+        |> ChatInputCommand.setIntegrations [ApplicationIntegrationType.GUILD_INSTALL]
         |> ChatInputCommand.addSubCommandGroup Gc.Group
 
 let (|Validate|_|) (interaction: Interaction) =
