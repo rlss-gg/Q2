@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common\Patterns.fs" />
     <Compile Include="Responses\CommonResponse.fs" />
     <Compile Include="Responses\Commands\RegisterPlayerResponse.fs" />
     <Compile Include="Responses\Commands\PlayerSettingsResponse.fs" />
@@ -15,6 +16,7 @@
     <Compile Include="Interactions\Commands\SettingsCommand.fs" />
     <Compile Include="Interactions\Commands\ProfileCommand.fs" />
     <Compile Include="Interactions\Commands\UserCommand.fs" />
+    <Compile Include="Interactions\InteractionHandler.fs" />
     <Compile Include="Controllers\InteractionController.fs" />
   </ItemGroup>
 

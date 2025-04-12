@@ -6,10 +6,10 @@ open System
 open System.Net.Http
 
 let commands = [
-    Command.ChatInput RegisterCommand.Metadata.Command
-    Command.ChatInput SettingsCommand.Metadata.Command
-    Command.ChatInput ProfileCommand.Metadata.Command
-    Command.ChatInput UserCommand.Metadata.Command
+    Command.ChatInput RegisterCommand.Command
+    Command.ChatInput SettingsCommand.Command
+    Command.ChatInput ProfileCommand.Command
+    Command.ChatInput UserCommand.Command
 ]
 
 let globalCommands =

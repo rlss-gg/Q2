@@ -1,15 +1,11 @@
 ﻿namespace Q2.Presentation
 
-open FSharp.Discord.Commands
-open FSharp.Discord.Rest
-open FSharp.Discord.Types
 open FSharp.Discord.Types.Serialization
 open FSharp.Discord.Webhook
 open Microsoft.Azure.Functions.Worker
 open Microsoft.Azure.Functions.Worker.Http
 open Q2.Application
 open System.Net
-open System.Threading.Tasks
 open Thoth.Json.Net
 
 type InteractionController (env: IEnv) =
@@ -36,113 +32,25 @@ type InteractionController (env: IEnv) =
         match Ed25519.verify timestamp json signature env.DiscordPublicKey with
         | false -> return req.CreateResponse HttpStatusCode.Unauthorized
         | _ ->
-
-        System.Console.WriteLine json // Temporary, for debugging
             
         // Read interaction from body
-        match Decode.fromString Interaction.decoder json with
-        | Error err ->
-            System.Console.Error.WriteLine err // Temporary, for debugging
-            return req.CreateResponse HttpStatusCode.BadRequest
+        match Decode.fromString InteractionCreateEvent.decoder json, Decode.fromString Interaction.decoder json with
+        | Ok event, Ok interaction ->
+            match! InteractionHandler.handle env event interaction with
+            | InteractionHandlerResponse.Ping ->
+                let res = req.CreateResponse HttpStatusCode.OK
+                res.Headers.Add("Content-Type", "application/json")
+                do! res.WriteStringAsync CommonResponse.ping
+                return res
 
-        | Ok interaction ->
-        
-        // Handle interaction
-        let client = env.BotClient env.DiscordBotToken
+            | InteractionHandlerResponse.Failure ->
+                return req.CreateResponse HttpStatusCode.BadRequest
 
-        let respond (response: CreateInteractionResponseRequest) = task {
-            do! Rest.createInteractionResponse response client :> Task
-            return req.CreateResponse HttpStatusCode.NoContent
-        }
+            | InteractionHandlerResponse.Success ->
+                return req.CreateResponse HttpStatusCode.Accepted
 
-        match interaction with
-        | Ping ->
-            let res = req.CreateResponse HttpStatusCode.OK
-            res.Headers.Add("Content-Type", "application/json")
-            do! res.WriteStringAsync CommonResponse.ping
-            return res
-            
-        | RegisterCommand.Validate action ->
-            match action with
-            | RegisterCommand.Action.InvalidArguments ->
-                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
-                return! respond response
-                
-            | RegisterCommand.Action.RankAutocomplete query ->
-                let choices = RankAutocompleteUseCase.run { Query = query }
-                let response = RegisterPlayerResponse.rankAutocomplete interaction.Id interaction.Token choices
-                return! respond response
-
-            | RegisterCommand.Action.RunCommand (userId, username, region, rank) ->
-                let data: RegisterPlayerUseCase = { Id = userId; Username = username; Region = region; Rank = rank }
-
-                match! RegisterPlayerUseCase.run env data with
-                | Error RegisterPlayerUseCaseError.PlayerAlreadyRegistered ->
-                    let response = CommonResponse.failed interaction.Id interaction.Token
-                    return! respond response
-
-                | Ok player ->
-                    let response = RegisterPlayerResponse.runCommand interaction.Id interaction.Token player
-                    return! respond response
-
-        | SettingsCommand.Validate action ->
-            match action with
-            | SettingsCommand.Action.InvalidArguments ->
-                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
-                return! respond response
-
-            | SettingsCommand.Action.ToggleNotifications userId ->
-                let data: ToggleNotificationUseCase = { Id = userId }
-
-                match! ToggleNotificationUseCase.run env data with
-                | Error ToggleNotificationUseCaseError.PlayerNotFound ->
-                    let response = CommonResponse.notRegistered interaction.Id interaction.Token
-                    return! respond response
-
-                | Ok player ->
-                    let response = PlayerSettingsResponse.notifications interaction.Id interaction.Token player.Settings.QueueNotificationsEnabled
-                    return! respond response
-
-        | ProfileCommand.Validate action ->
-            match action with
-            | ProfileCommand.Action.InvalidArguments ->
-                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
-                return! respond response
-
-            | ProfileCommand.Action.ViewProfile userId ->
-                let data: GetPlayerUseCase = { Id = userId }
-
-                match! GetPlayerUseCase.run env data with
-                | Error GetPlayerUseCaseError.PlayerNotFound ->
-                    let response = CommonResponse.notRegistered interaction.Id interaction.Token
-                    return! respond response
-
-                | Ok player ->
-                    let response = PlayerProfileResponse.profile interaction.Id interaction.Token player
-                    return! respond response
-
-        | UserCommand.Validate action ->
-            match action with
-            | UserCommand.Action.InvalidArguments ->
-                let response = CommonResponse.invalidArguments interaction.Id interaction.Token
-                return! respond response
-
-            | UserCommand.Action.VerifyGc userId ->
-                let data: VerifyPlayerGcUseCase = { Id = userId }
-
-                match! VerifyPlayerGcUseCase.run env data with
-                | Error VerifyPlayerGcUseCaseError.PlayerNotFound ->
-                    let response = CommonResponse.notRegistered interaction.Id interaction.Token
-                    return! respond response
-
-                | Error VerifyPlayerGcUseCaseError.PrimaryRankNotGc ->
-                    let response = UserManagementResponse.playerNotGc interaction.Id interaction.Token
-                    return! respond response
-
-                | Ok player ->
-                    let response = UserManagementResponse.verifyGc interaction.Id interaction.Token player
-                    return! respond response
-        
         | _ ->
-            return req.CreateResponse HttpStatusCode.BadRequest
+            return req.CreateResponse HttpStatusCode.BadRequest // TODO: Return generic error
+
+        // TODO: Decode interaction metadata into event too rather than serializing both separately (FSharp.Discord change)
     }
