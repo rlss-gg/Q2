@@ -70,6 +70,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
             name: 'http'
             instanceCount: 1
           }
+          {
+            name: 'durable'
+            instanceCount: 1
+          }
         ]
       }
       runtime: {
