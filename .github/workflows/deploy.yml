@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       functionAppName: ${{ steps.deploy.outputs.functionAppName }}
+      functionAppUrl: ${{ steps.deploy.outputs.functionAppUrl }}
     steps:
       - uses: actions/checkout@v7
 
@@ -60,3 +61,21 @@ jobs:
         with:
           app-name: ${{ needs.deploy-infra.outputs.functionAppName }}
           package: ./publish
+
+      - name: Trigger register endpoint
+        shell: bash
+        env:
+          FUNCTION_APP_NAME: ${{ needs.deploy-infra.outputs.functionAppName }}
+          FUNCTION_APP_URL: ${{ needs.deploy-infra.outputs.functionAppUrl }}
+          AZ_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZ_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+        run: |
+          FUNCTION_KEY="$(az rest --method post --url "https://management.azure.com/subscriptions/${AZ_SUBSCRIPTION_ID}/resourceGroups/${AZ_RESOURCE_GROUP}/providers/Microsoft.Web/sites/${FUNCTION_APP_NAME}/host/default/listkeys?api-version=2023-12-01" --query "functionKeys.default" --output tsv)"
+          if [ -z "$FUNCTION_KEY" ]; then
+            echo "Failed to resolve function host key"
+            exit 1
+          fi
+          echo "::add-mask::$FUNCTION_KEY"
+          curl --fail --silent --show-error \
+            -X POST "$FUNCTION_APP_URL/register" \
+            -H "x-functions-key: $FUNCTION_KEY"

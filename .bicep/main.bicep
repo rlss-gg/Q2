@@ -132,3 +132,4 @@ resource storageTableDataContributor 'Microsoft.Authorization/roleAssignments@20
 
 output functionAppName string = functionApp.name
 output resourceGroupName string = resourceGroup().name
+output functionAppUrl string = 'https://${functionApp.properties.defaultHostName}'

@@ -42,7 +42,7 @@ public static class RegisterOrchestrator
         MessageFlags.IsComponentsV2,
         [
             new ContainerComponent([
-                new TextDisplayComponent($"<@{userId}> you have successfully registered as **{username}** and based on your rank, your starting ELO is **{elo}**. You can now use `/queue` to play Q2.App."),
+                new TextDisplayComponent($"<@{userId}> you have successfully registered as **{username}** and based on your rank, your starting ELO is **{elo}**. You can now use `/queue` to play Q2."),
             ]),
         ]);
 

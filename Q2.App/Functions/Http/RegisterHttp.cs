@@ -77,7 +77,7 @@ public static class RegisterHttp
 
     [Function(nameof(RegisterHttp))]
     public static async Task<HttpResponseData> RunAsync(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "register")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "register")] HttpRequestData req)
     {
         using var client = new DiscordClient();
 
