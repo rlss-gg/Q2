@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Non Solution Files/">
+    <File Path=".bicep/main.bicep" />
+    <File Path=".github/workflows/deploy.yml" />
+  </Folder>
+  <Project Path="Q2.App/Q2.App.csproj" />
+</Solution>

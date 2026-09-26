@@ -1,0 +1,18 @@
+{
+    "version": "2.0",
+    "extensions": {
+        "durableTask": {
+            "storageProvider": {
+                "partitionCount": 1,
+                "controlQueueBatchSize": 32,
+                "controlQueueBufferThreshold": 500,
+                "maxQueuePollingInterval": "00:00:01"
+            },
+            "maxConcurrentOrchestratorFunctions": 50,
+            "maxConcurrentActivityFunctions": 50
+        },
+        "http": {
+            "routePrefix": ""
+        }
+    }
+}
