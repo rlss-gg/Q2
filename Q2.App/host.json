@@ -3,7 +3,7 @@
     "extensions": {
         "durableTask": {
             "storageProvider": {
-                "partitionCount": 1,
+                "partitionCount": 4,
                 "controlQueueBatchSize": 32,
                 "controlQueueBufferThreshold": 500,
                 "maxQueuePollingInterval": "00:00:01"
